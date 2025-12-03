@@ -2,25 +2,29 @@ const API_BASE_URL = "https://lab15beck.onrender.com";
 const CARS_URL = `${API_BASE_URL}/api/cars`;
 
 export async function getCars(token) {
-  const headers = {};
+    const headers = {};
 
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
-  }
+    // if (token) {
+    //   headers.Authorization = `Bearer ${token}`;
+    // }
 
-  const response = await fetch(CARS_URL, { headers });
+    try {
+        const response = await fetch(CARS_URL, { headers });
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch cars");
-  }
+       
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
-  const data = await response.json();
+        const result = await response.json();
 
-  if (data._embedded && data._embedded.cars) {
-    return data._embedded.cars;
-  }
-
-  return Array.isArray(data) ? data : [];
+    
+        return Array.isArray(result) ? result : [];
+    } catch (error) {
+        console.error("Error fetching cars:", error);
+       
+        throw error;
+    }
 }
 
 export async function addCar(car, token) {
@@ -38,8 +42,8 @@ export async function addCar(car, token) {
   }
 }
 
-export async function updateCar(link, car, token) {
-  const response = await fetch(link, {
+export async function updateCar(id, car, token) {
+  const response = await fetch(`${CARS_URL}/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -53,8 +57,8 @@ export async function updateCar(link, car, token) {
   }
 }
 
-export async function deleteCar(link, token) {
-  const response = await fetch(link, {
+export async function deleteCar(id, token) {
+  const response = await fetch(`${CARS_URL}/${id}`, {
     method: "DELETE",
     headers: {
       Authorization: `Bearer ${token}`,

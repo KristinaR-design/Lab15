@@ -11,30 +11,17 @@ import EditIcon from '@mui/icons-material/Edit';
 import Tooltip from '@mui/material/Tooltip';
 import Button from '@mui/material/Button';
 
-function EditCar({ cardata }) {
+function EditCar({ cardata, token }) {
     const [open, setOpen] = useState(false);
-    const [car, setCar] = useState({
-        brand: '',
-        model: '',
-        color: '',
-        registrationNumber: '',
-        modelYear: '',
-        price: ''
-    });
+    const [car, setCar] = useState({  });
 
-
+  
+    const [isSaving, setIsSaving] = useState(false);
+    const [saveError, setSaveError] = useState(null);
 
     const queryClient = useQueryClient();
 
-    const { mutate } = useMutation({
-        mutationFn: updateCar,
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['cars'] });
-        },
-        onError: (err) => {
-            console.error(err);
-        }
-    });
+
 
     const handleClickOpen = () => {
         setCar({
@@ -45,6 +32,7 @@ function EditCar({ cardata }) {
             modelYear: cardata.modelYear,
             price: cardata.price
         });
+        setSaveError(null); 
         setOpen(true);
     };
 
@@ -54,26 +42,36 @@ function EditCar({ cardata }) {
         setCar({ ...car, [event.target.name]: event.target.value });
     };
 
-    const handleSave = () => {
-        const url = cardata._links.self.href;
-        const carEntry = {
-            car: {
-                ...car,
-                modelYear: Number(car.modelYear),
-                price: Number(car.price)
-            },
-            url
+    const handleSave = async () => {
+        
+        setIsSaving(true);
+        setSaveError(null);
+
+        const id = cardata.id;
+        const carData = {
+            ...car,
+            modelYear: Number(car.modelYear),
+            price: Number(car.price)
         };
-        mutate(carEntry);
-        setCar({
-            brand: '',
-            model: '',
-            color: '',
-            registrationNumber: '',
-            modelYear: '',
-            price: ''
-        });
-        setOpen(false);
+
+        try {
+            
+            await updateCar(id, carData, token);
+
+        
+            queryClient.invalidateQueries({ queryKey: ['cars'] });
+
+           
+            setCar({ });
+            setOpen(false);
+        } catch (error) {
+           
+            console.error("Save failed:", error);
+            setSaveError(error.message || "Failed to save changes.");
+        } finally {
+           
+            setIsSaving(false);
+        }
     };
 
     return (

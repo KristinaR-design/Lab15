@@ -27,11 +27,11 @@ function Carlist({ token }) {
         isLoading,
     } = useQuery({
         queryKey: ["cars"],
-        queryFn: () => getCars(token), // передаём токен в API-функцию
+        queryFn: () => getCars(token),
     });
 
     const { mutate } = useMutation({
-        mutationFn: (link) => deleteCar(link, token), // тоже передаём токен
+        mutationFn: (link) => deleteCar(link, token),
         onSuccess: () => {
             setOpen(true);
             queryClient.invalidateQueries({ queryKey: ["cars"] });
@@ -75,7 +75,7 @@ function Carlist({ token }) {
                                     `Are you sure you want to delete ${params.row.brand} ${params.row.model}?`
                                 )
                             ) {
-                                mutate(params.row._links.car.href);
+                                mutate(params.row.id);
                             }
                         }}
                     >
@@ -102,7 +102,7 @@ function Carlist({ token }) {
                     rows={cars}
                     columns={columns}
                     disableRowSelectionOnClick
-                    getRowId={(row) => row._links.self.href}
+                    getRowId={(row) => row.id}
                     slots={{ toolbar: GridToolbar }}
                 />
             </div>
