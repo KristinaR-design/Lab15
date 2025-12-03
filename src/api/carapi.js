@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8080/api/cars";
+const API_URL = "https://lab15beck.onrender.com";
 
 export async function getCars(token) {
   const response = await fetch(API_URL, {
