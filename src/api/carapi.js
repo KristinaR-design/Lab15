@@ -2,11 +2,13 @@ const API_BASE_URL = "https://lab15beck.onrender.com";
 const CARS_URL = `${API_BASE_URL}/api/cars`;
 
 export async function getCars(token) {
-  const response = await fetch(CARS_URL, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const headers = {};
+
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  const response = await fetch(CARS_URL, { headers });
 
   if (!response.ok) {
     throw new Error("Failed to fetch cars");
