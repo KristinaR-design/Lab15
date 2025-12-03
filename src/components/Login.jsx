@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { TextField, Button, Snackbar, Box, Stack } from "@mui/material";
 
+
+
+const API_BASE_URL = "https://lab15beck.onrender.com";
+
 const Login = ({ onLogin }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -12,7 +16,6 @@ const Login = ({ onLogin }) => {
     setOpen(true);
   };
 
-
   const handleLogin = async (e) => {
     e.preventDefault();
 
@@ -22,7 +25,7 @@ const Login = ({ onLogin }) => {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/login", {
+      const response = await fetch(`${API_BASE_URL}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
@@ -42,7 +45,6 @@ const Login = ({ onLogin }) => {
     }
   };
 
-  
   const handleRegister = async () => {
     if (!username || !password) {
       showError("Username and password are required");
@@ -50,7 +52,7 @@ const Login = ({ onLogin }) => {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/register", {
+      const response = await fetch(`${API_BASE_URL}/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
@@ -101,7 +103,6 @@ const Login = ({ onLogin }) => {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        {/* КНОПКИ LOGIN + REGISTER */}
         <Stack direction="row" spacing={2}>
           <Button
             type="submit"
